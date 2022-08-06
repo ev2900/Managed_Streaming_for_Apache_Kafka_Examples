@@ -1,0 +1,311 @@
+Description: This template will deploy the network requirements for MSK + an Ec@ jump box
+
+Parameters:
+  # Ask the user for the name of the EC2
+  EC2KeyPairNameParameter:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: name of the key pair to ssh into the instance
+
+Resources:
+  
+  # -----------------
+  # VPC
+  # ----------------- 
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: '10.0.0.0/16'
+      Tags:
+        - Key: Name
+          Value: msk vpc
+
+  # -----------------
+  # Internet Gateway
+  # -----------------
+  VPCInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: msk vpc internet gateway
+  # Attach InternetGateway to VPC
+  AttachInternetGatewayVPC:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      InternetGatewayId: 
+        Ref: VPCInternetGateway
+      VpcId:
+        Ref: VPC
+
+  # -----------------
+  # Subnets
+  # ----------------- 
+
+  #
+  # MSK Subnets
+  #
+  MSKSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.0.0/28'
+      AvailabilityZone: 'us-east-1a'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: private-subnet-a | us-east-1a
+
+  MSKSubnet1b:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.1.0/28'
+      AvailabilityZone: 'us-east-1b'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: private-subnet-b | us-east-1b
+
+  MSKSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.2.0/28'
+      AvailabilityZone: 'us-east-1c'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: private-subnet-c | us-east-1c
+
+  MSKSubnet1aP:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.3.0/28'
+      AvailabilityZone: 'us-east-1a'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: public-subnet-a | us-east-1a
+
+  # -----------------
+  # Network Security Group(s)
+  # -----------------
+
+  #
+  # MSK Security Group
+  #   
+  MSKSearchSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: 'msk security group'
+      GroupDescription: 'msk security group'
+      VpcId: !Ref VPC
+      # Egress rules
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1 
+          ToPort: -1
+          CidrIp: '0.0.0.0/0'
+      Tags:
+        - Key: Name
+          Value: 'msk security group'
+  # add a self reference ingress rule 
+  MSKSearchSecurityGroupIngress1:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      # Ingress rules
+      GroupId: !Ref MSKSearchSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !GetAtt MSKSearchSecurityGroup.GroupId
+  # add a ingress rule for traffic from EC2 
+  MSKSearchSecurityGroupIngress2:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      # Ingress rules
+      GroupId: !Ref MSKSearchSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !GetAtt Ec2SecurityGroup.GroupId
+
+
+  #
+  # Ec2 Security Group
+  #   
+  Ec2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: 'ec2 security group'
+      GroupDescription: 'ec2 security group'
+      VpcId: !Ref VPC
+      # Egress rules
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1 
+          ToPort: -1
+          CidrIp: '0.0.0.0/0'
+      Tags:
+        - Key: Name
+          Value: 'ec2 security group'
+  # add a self reference ingress rule 
+  Ec2SecurityGroupIngress1:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      # Ingress rules
+      GroupId: !Ref Ec2SecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !GetAtt Ec2SecurityGroup.GroupId
+
+  # -----------------
+  # Route Table
+  # -----------------
+  VPCRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: msk vpc route table
+      VpcId: !Ref VPC
+
+  # add a route to the internet gateway
+  InternetGatewayRoute:
+    Type: AWS::EC2::Route
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref VPCInternetGateway
+
+  # associate route table with subnet
+  MSKSubnet1aSubnetAssociation1a:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      SubnetId: !Ref MSKSubnet1a
+
+  MSKSubnet1bSubnetAssociation1b:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      SubnetId: !Ref MSKSubnet1b
+
+  MSKSubnet1cSubnetAssociation1c:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      SubnetId: !Ref MSKSubnet1c
+
+  MSKSubnet1aPSubnetAssociation1c:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      SubnetId: !Ref MSKSubnet1aP
+
+  # -----------------
+  # IAM role
+  # -----------------
+
+  #
+  # EC2 IAM Role
+  #
+  EC2IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'Workshop_EC2'
+      Description: 'IAM role for EC2 instance'
+      # Trust relationships
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      # Premissions
+      Policies:
+        # EC2 premissions
+        - PolicyName: ec2
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 'ec2:*'
+                Resource: '*'
+
+  # IAM instance profile
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      Path: /
+      Roles: [!Ref EC2IAMRole]
+
+  # -----------------
+  # EC2
+  # -----------------
+  EC2Server:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: 'ami-052efd3df9dad4825'
+      InstanceType: 't2.xlarge'
+      SubnetId: !Ref MSKSubnet1aP
+      SecurityGroupIds:
+        - !Ref Ec2SecurityGroup
+      KeyName: !Ref EC2KeyPairNameParameter
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      Tags:
+        - Key: Name
+          Value: msk-ec2
+
+  # -----------------
+  # Elastic IP
+  # -----------------
+  EC2ElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref EC2Server
+
+  # -----------------
+  # MSK Configuration
+  # -----------------
+  MSKConfig:
+    Type: AWS::MSK::Configuration
+    Properties: 
+      Name: MSK Lab Configuration
+      Description: MSK Lab Configuration
+      ServerProperties: "
+        auto.create.topics.enable=true
+        delete.topic.enable=true
+        log.retention.hours=8
+      "
+
+
+  # -----------------
+  # MSK Cluster
+  # -----------------
+  MSKCluster:
+    Type: AWS::MSK::Cluster
+    Properties:
+      ClusterName: msk-workshop-cluster
+      KafkaVersion: 2.6.2
+      NumberOfBrokerNodes: 3
+      BrokerNodeGroupInfo:
+        InstanceType: kafka.m5.large
+        ClientSubnets: 
+          - !Ref MSKSubnet1a
+          - !Ref MSKSubnet1b
+          - !Ref MSKSubnet1c
+        SecurityGroups:
+          - !Ref MSKSearchSecurityGroup
+        StorageInfo: 
+          EBSStorageInfo:
+            VolumeSize: 100
+        ClientAuthentication:
+          Unauthenticated: True
+          Sasl: False
+          Tls: False
+        EncryptionInfo:
+          EncryptionInTransit:
+            ClientBroker: TLS_PLAINTEXT
+            InCluster: true
