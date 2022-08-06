@@ -11,6 +11,8 @@
 1. SSH into the Ec2 instance created by the CloudFormation stack. *You may need to update the security group associated with the Ec2 instance to allow inbound traffic from your laptop*
 2. Install required dependencies
 
+```sudo apt-get update```
+
 ```sudo apt install default-jdk```
 
 ```wget https://archive.apache.org/dist/kafka/2.6.2/kafka_2.12-2.6.2.tgz```
