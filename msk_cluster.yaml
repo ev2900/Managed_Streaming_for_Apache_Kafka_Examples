@@ -267,21 +267,6 @@ Resources:
       InstanceId: !Ref EC2Server
 
   # -----------------
-  # MSK Configuration
-  # -----------------
-  MSKConfig:
-    Type: AWS::MSK::Configuration
-    Properties: 
-      Name: MSK Lab Configuration
-      Description: MSK Lab Configuration
-      ServerProperties: "
-        auto.create.topics.enable=true
-        delete.topic.enable=true
-        log.retention.hours=8
-      "
-
-
-  # -----------------
   # MSK Cluster
   # -----------------
   MSKCluster:
