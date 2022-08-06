@@ -9,7 +9,7 @@
 ### Create a Topic
 
 1. SSH into the Ec2 instance created by the CloudFormation stack. *You may need to update the security group associated with the Ec2 instance to allow inbound traffic from your laptop*
-2. Run the following on the terminal of Ec2 
+2. Install required dependencies
 
 ```sudo apt install default-jdk```
 
@@ -18,3 +18,11 @@
 ```tar -xzf kafka_2.12-2.6.2.tgz```
 
 ```cd kafka_2.12-2.6.2```
+
+3. Create a kafka topic
+
+```bin/kafka-topics.sh --bootstrap-server $MYBROKERS --create --topic test10 --partitions 10 --replication-factor 3```
+
+### Add Brokers to MSK Cluster
+
+
