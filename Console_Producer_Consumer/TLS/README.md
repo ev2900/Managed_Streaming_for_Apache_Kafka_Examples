@@ -28,13 +28,7 @@ Follow the high level steps below to create a MSK cluster, topic, send/receive d
 3. View the MSK cluster's client information. Replace/run *<TLS-boot-strap-server>* with the Bootstrap servers, TLS, Private endpoint value
 
 ```export MYTLSBROKERS=<TLS-boot-strap-server>```
- 
-## Create a Topic
-  
-1. Create a kafka topic
-  
-```bin/kafka-topics.sh --bootstrap-server $MYTLSBROKERS --create --topic TLSTestTopic --partitions 3 --replication-factor 3```
-  
+
 ## Configure Client TLS
  
 To send / receive data via. TLS we need to create a client.properties file and set up a SSL truststore 
@@ -47,12 +41,18 @@ To send / receive data via. TLS we need to create a client.properties file and s
 
  2. Create client.properties
  
-Create a ```/home/ubuntu/tmp/client.properties``` file and place the code below inside 
-  
+Create a ```/home/ubuntu/tmp/client.properties``` file and place the code below inside
+
 ```
 security.protocol=SSL
 ssl.truststore.location=/tmp/kafka.client.truststore.jks
 ```
+ 
+## Create a Topic
+  
+1. Create a kafka topic
+  
+```bin/kafka-topics.sh --bootstrap-server $MYTLSBROKERS --create --topic TLSTestTopic --partitions 3 --replication-factor 3```
 
 ## Console Consumer
   
