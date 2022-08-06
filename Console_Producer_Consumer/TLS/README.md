@@ -34,24 +34,34 @@ Follow the high level steps below to create a MSK cluster, topic, send/receive d
 ``` ```
   
 ## Configure Client TLS
-  
+ 
+To send / receive data via. TLS we need to create a client.properties file and set up a SSL truststore 
+
+ 1. Set up a SSL truststore via. the clients JVM truststore
+ 
 ```mkdir /home/ubuntu/tmp/```
   
 ```cp /usr/lib/jvm/java-1.11.0-openjdk-amd64/lib/security/cacerts /home/ubuntu/tmp/kafka.client.truststore.jks```
 
-```client.properties```
+ 2. Create client.properties
+ 
+Create a ```/home/ubuntu/tmp/client.properties``` file and place the code below inside 
   
 ```
 security.protocol=SSL
 ssl.truststore.location=/tmp/kafka.client.truststore.jks
 ```
 
-## Console Producer
-  
-```kafka_2.12-2.6.2/bin/kafka-console-producer.sh --broker-list $MYTLSBROKERS --producer.config /home/ubuntu/tmp/client.properties --topic TLSTestTopic```
-
 ## Console Consumer
   
+```kafka_2.12-2.6.2/bin/kafka-console-consumer.sh --bootstrap-server $MYTLSBROKERS --consumer.config /home/ubuntu/tmp/client.properties --topic TLSTestTopic``` 
+ 
+Leave this window open. When data is sent from the console producer it will appear in this window
+ 
+## Console Producer
+
 In a new SSH / EC2 terminal session 
-  
-```kafka_2.12-2.6.2/bin/kafka-console-consumer.sh --bootstrap-server $MYTLSBROKERS --consumer.config /home/ubuntu/tmp/client.properties --topic TLSTestTopic```
+ 
+```kafka_2.12-2.6.2/bin/kafka-console-producer.sh --broker-list $MYTLSBROKERS --producer.config /home/ubuntu/tmp/client.properties --topic TLSTestTopic```
+
+Type messages and the [ENTER] to send them. You will see the messages appear in the console consumer window
