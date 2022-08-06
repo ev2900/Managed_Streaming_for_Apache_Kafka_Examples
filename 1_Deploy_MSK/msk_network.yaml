@@ -1,0 +1,140 @@
+Description: This template will deploy the network requirements for MSK
+
+Resources:
+  
+  # -----------------
+  # VPC
+  # ----------------- 
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: '10.0.0.0/16'
+      Tags:
+        - Key: Name
+          Value: msk vpc
+
+  # -----------------
+  # Internet Gateway
+  # -----------------
+  VPCInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: msk vpc internet gateway
+  # Attach InternetGateway to VPC
+  AttachInternetGatewayVPC:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      InternetGatewayId: 
+        Ref: VPCInternetGateway
+      VpcId:
+        Ref: VPC
+
+  # -----------------
+  # Subnets
+  # ----------------- 
+
+  #
+  # MSK Subnets
+  #
+  MSKSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.0.0/28'
+      AvailabilityZone: 'us-east-1a'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: private-subnet-a | us-east-1a
+
+  MSKSubnet1b:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.1.0/28'
+      AvailabilityZone: 'us-east-1b'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: private-subnet-b | us-east-1b
+
+  MSKSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.2.0/28'
+      AvailabilityZone: 'us-east-1c'
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: private-subnet-c | us-east-1c
+
+  # -----------------
+  # Network Security Group(s)
+  # -----------------
+
+  #
+  # MSK Security Group
+  #   
+  MSKSearchSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: 'msk security group'
+      GroupDescription: 'msk security group'
+      VpcId: !Ref VPC
+      # Egress rules
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1 
+          ToPort: -1
+          CidrIp: '0.0.0.0/0'
+      Tags:
+        - Key: Name
+          Value: 'msk security group'
+  # add a self reference ingress rule 
+  MSKSearchSecurityGroupIngress1:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      # Ingress rules
+      GroupId: !Ref MSKSearchSecurityGroup
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      SourceSecurityGroupId: !GetAtt MSKSearchSecurityGroup.GroupId
+
+  # -----------------
+  # Route Table
+  # -----------------
+  VPCRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: msk vpc route table
+      VpcId: !Ref VPC
+
+  # add a route to the internet gateway
+  InternetGatewayRoute:
+    Type: AWS::EC2::Route
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref VPCInternetGateway
+
+  # associate route table with subnet
+  MSKSubnet1aSubnetAssociation1a:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      SubnetId: !Ref MSKSubnet1a
+
+  MSKSubnet1bSubnetAssociation1b:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      SubnetId: !Ref MSKSubnet1b
+
+  MSKSubnet1cSubnetAssociation1c:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref VPCRouteTable
+      SubnetId: !Ref MSKSubnet1c
