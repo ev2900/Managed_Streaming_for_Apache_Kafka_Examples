@@ -25,6 +25,10 @@
 
 ```bin/kafka-topics.sh --bootstrap-server $MYBROKERS --create --topic test10 --partitions 10 --replication-factor 3```
 
-### Add Brokers to MSK Cluster
+### Add Brokers to MSK Cluster & Re-assign Partitions
 
 1. via. the AWS console edit the number of brokers. Adjust the number of brokers perzone to 2
+
+2. View the current partition broker assignments
+ 
+```bin/kafka-topics.sh --bootstrap-server $MYBROKERS --describe --topic test10```
