@@ -23,6 +23,8 @@ Follow the high level steps below to create a MSK cluster, topic, send/receive d
 
 ```tar -xzf kafka_2.12-2.6.2.tgz```
 
+```cd kafka_2.12-2.6.2```
+
 3. View the MSK cluster's client information. Replace/run *<TLS-boot-strap-server>* with the Bootstrap servers, TLS, Private endpoint value
 
 ```export MYTLSBROKERS=<TLS-boot-strap-server>```
