@@ -45,7 +45,7 @@ Create a ```/home/ubuntu/tmp/client.properties``` file and place the code below 
 
 ```
 security.protocol=SSL
-ssl.truststore.location=/tmp/kafka.client.truststore.jks
+ssl.truststore.location=/home/ubuntu/tmp/kafka.client.truststore.jks
 ```
  
 ## Create a Topic
