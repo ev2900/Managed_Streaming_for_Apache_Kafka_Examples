@@ -52,7 +52,7 @@ ssl.truststore.location=/home/ubuntu/tmp/kafka.client.truststore.jks
   
 1. Create a kafka topic
   
-```bin/kafka-topics.sh --bootstrap-server $MYTLSBROKERS --create --topic TLSTestTopic --partitions 3 --replication-factor 3```
+```bin/kafka-topics.sh --bootstrap-server $MYTLSBROKERS --create --topic TLSTestTopic --partitions 3 --replication-factor 3 --command-config /home/ubuntu/tmp/client.properties```
 
 ## Console Consumer
   
