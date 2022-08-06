@@ -46,7 +46,7 @@ To have kafka suggest a new mapping
 
 5. ```bin/kafka-reassign-partitions.sh --bootstrap-server $MYBROKERS --topics-to-move-json-file topics-to-move.json --broker-list "1,2,3,4,5,6" --generate``` 
 6. Copy the *Proposed partition reassignment configuration* part of the respond into a new json file ```kafka-reassign-partitions.sh```
-7. bin/kafka-reassign-partitions.sh --bootstrap-server $MYBROKERS --reassignment-json-file expand-cluster-reassignment.json --execute
+7. ```bin/kafka-reassign-partitions.sh --bootstrap-server $MYBROKERS --reassignment-json-file expand-cluster-reassignment.json --execute```
 
 To monitor the progress of the partition broker reassignment 
 
