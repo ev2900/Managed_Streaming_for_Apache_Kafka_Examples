@@ -53,3 +53,7 @@ To monitor the progress of the partition broker reassignment
 ```bin/kafka-reassign-partitions.sh --bootstrap-server $MYBROKERS --reassignment-json-file expand-cluster-reassignment.json --verify```
 
 You can verify that the reassignment worked by running ```bin/kafka-topics.sh --bootstrap-server $MYBROKERS --describe --topic test10``` and observing that the paritions in the topic are now mapped across all 6 brokers
+
+### Expand Broker Storage
+
+1. via. the AWS console expand the EBS storage volume per broker to 1000 GiB   
