@@ -287,9 +287,8 @@ Resources:
           EBSStorageInfo:
             VolumeSize: 100
       ClientAuthentication:
-        Unauthenticated: True
-        Sasl: False
-        Tls: False
+        Unauthenticated: 
+          Enabled: True
       EncryptionInfo:
         EncryptionInTransit:
           ClientBroker: TLS_PLAINTEXT
