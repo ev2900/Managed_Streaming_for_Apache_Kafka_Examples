@@ -29,4 +29,4 @@ jobs:
           aws-region: us-east-1
           
       - name: Upload msk_cluster.yaml to S3
-        run: aws s3 cp /home/runner/work/Managed_Streaming_for_Apache_Kafka_Examples/Managed_Streaming_for_Apache_Kafka_Examples/msk_cluster.yaml s3://sharkech-public/misc-public/msk_cluster.yaml
+        run: aws s3 cp /home/runner/work/Managed_Streaming_for_Apache_Kafka_Examples/Managed_Streaming_for_Apache_Kafka_Examples/Cluster_Expansion/msk_cluster.yaml s3://sharkech-public/misc-public/msk_cluster.yaml
