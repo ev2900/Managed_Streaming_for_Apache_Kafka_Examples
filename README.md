@@ -32,3 +32,7 @@
 2. View the current partition broker assignments
  
 ```bin/kafka-topics.sh --bootstrap-server $MYBROKERS --describe --topic test10```
+
+Notice how all of the partitions are assigned to brokers 1, 2, 3. Given that the MSK cluster is now expanded to include 6 brokers, we will remap the partitions to include broker 4, 5, 6
+
+3. 
