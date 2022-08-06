@@ -27,4 +27,4 @@
 
 ### Add Brokers to MSK Cluster
 
-
+1. via. the AWS console edit the number of brokers. Adjust the number of brokers perzone to 2
