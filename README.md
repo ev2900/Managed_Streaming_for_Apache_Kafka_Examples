@@ -12,7 +12,9 @@
 2. Run the following on the terminal of Ec2 
 
 ```sudo apt install default-jdk```
-```wget https://archive.apache.org/dist/kafka/2.6.2/kafka_2.12-2.6.2.tgz```
-```tar -xzf kafka_2.12-2.6.2.tgz```
-```cd kafka_2.12-2.6.2```
 
+```wget https://archive.apache.org/dist/kafka/2.6.2/kafka_2.12-2.6.2.tgz```
+
+```tar -xzf kafka_2.12-2.6.2.tgz```
+
+```cd kafka_2.12-2.6.2```
