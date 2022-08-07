@@ -37,12 +37,12 @@ Follow the high level steps below to create a MSK cluster, topic, send/receive d
   
 ## Console Consumer
   
-```bin/kafka-console-consumer.sh --bootstrap-server $MYPLAINTEXTBROKERS --consumer.config /home/ubuntu/tmp/client.properties --topic PlainTextTestTopic``` 
+```bin/kafka-console-consumer.sh --bootstrap-server $MYPLAINTEXTBROKERS --topic PlainTextTestTopic``` 
  
 Leave this window open. When data is sent from the console producer it will appear in this window
  
 ## Console Producer
 In a new SSH / EC2 terminal session 
  
-```bin/kafka-console-producer.sh --broker-list $MYPLAINTEXTBROKERS --producer.config /home/ubuntu/tmp/client.properties --topic PlainTextTestTopic```
+```bin/kafka-console-producer.sh --broker-list $MYPLAINTEXTBROKERS --topic PlainTextTestTopic```
 Type messages and the [ENTER] to send them. You will see the messages appear in the console consumer window
