@@ -1,4 +1,4 @@
-Description: This template will deploy the network requirements for MSK + an Ec@ jump box
+Description: This template will deploy the network requirements for MSK + an Ec2 jump box
 
 Parameters:
   # Ask the user for the name of the EC2
